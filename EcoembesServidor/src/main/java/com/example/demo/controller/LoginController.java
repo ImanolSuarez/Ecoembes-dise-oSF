@@ -1,17 +1,24 @@
 package com.example.demo.controller;
 
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.facade.EcoembesFacade;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -43,13 +50,13 @@ public class LoginController {
 
     @Operation(summary = "Logout del sistema", description = "Cierra sesión y elimina el token del usuario.", responses = {
             @ApiResponse(responseCode = "200", description = "OK: Logout exitoso"),
-            @ApiResponse(responseCode = "404", description = "Not Found: Usuario no encontrado")
+            @ApiResponse(responseCode = "404", description = "Not Found: Token no encontrado")
     })
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
-            @Parameter(name = "logoutDTO", description = "Email del usuario para logout", required = true) @Valid @RequestBody LoginDTO logoutDTO) {
+            @Parameter(name = "token", description = "Token de sesión del usuario", required = true) @RequestParam("token") String token) {
 
-        Optional<String> result = ecoembesFacade.logout(logoutDTO.getEmail());
+        Optional<String> result = ecoembesFacade.logoutByToken(token);
 
         if (result.isPresent()) {
             return new ResponseEntity<>(result.get(), HttpStatus.OK);

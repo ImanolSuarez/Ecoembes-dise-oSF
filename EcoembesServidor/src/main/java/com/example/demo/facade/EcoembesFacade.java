@@ -64,6 +64,20 @@ public class EcoembesFacade {
         return result;
     }
 
+    public Optional<String> logoutByToken(String token) {
+        Optional<String> email = loginService.getEmailByToken(token);
+        
+        if (email.isPresent()) {
+            Optional<String> result = loginService.logoutByToken(token);
+            if (result.isPresent()) {
+                sessionStateManager.removeSession(token);
+            }
+            return result;
+        }
+        
+        return Optional.empty();
+    }
+
     public Optional<Personal> register(String email, String password) {
         return loginService.register(email, password);
     }

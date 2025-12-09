@@ -70,6 +70,27 @@ public class LoginService {
         return Optional.empty();
     }
 
+    /**
+     * Logout por token - Elimina el token y la información asociada
+     */
+    public Optional<String> logoutByToken(String token) {
+        String email = activeTokens.get(token);
+        
+        if (email != null) {
+            activeTokens.remove(token);
+            
+            // Limpiar token en la base de datos
+            personalService.getPersonalByEmail(email).ifPresent(personal -> {
+                personal.setToken(null);
+                personalService.updatePersonal(email, personal);
+            });
+            
+            return Optional.of("Logout exitoso");
+        }
+
+        return Optional.empty();
+    }
+
     public Optional<Personal> register(String email, String password) {
         if (passwords.containsKey(email)) {
             return Optional.empty(); // Ya existe
