@@ -1,8 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.gui.VentanaLogin;
-import javax.swing.SwingUtilities;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
 import javax.swing.UIManager;
+
+import com.example.demo.swing.SwingClientGUI;
 
 public class ClienteEcoembesApplication {
 
@@ -15,9 +18,16 @@ public class ClienteEcoembesApplication {
         }
 
         // Iniciar la aplicación en el Event Dispatch Thread de Swing
-        SwingUtilities.invokeLater(() -> {
-            VentanaLogin login = new VentanaLogin();
-            login.setVisible(true);
+        EventQueue.invokeLater(() -> {
+            try {
+                SwingClientGUI gui = new SwingClientGUI();
+                gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                gui.setVisible(true);
+                gui.toFront();
+                gui.requestFocus();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 }
